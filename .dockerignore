@@ -1,0 +1,10 @@
+.env
+.venv/
+.venv312plus/
+__pycache__/
+*.pyc
+*.sqlite3
+*.pdf
+.DS_Store
+.git/
+start_llama.command

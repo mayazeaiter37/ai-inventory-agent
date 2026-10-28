@@ -1,0 +1,56 @@
+{% load chat_format %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventory Agent</title>
+    <style>
+        body { font-family: sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; color: #1f2937; }
+        .msg { padding: 16px 20px; margin: 12px 0; border-radius: 12px; line-height: 1.65; overflow-wrap: anywhere; }
+        .user { background: #dceeff; text-align: right; }
+        .agent { background: #f3f4f6; border: 1px solid #e5e7eb; }
+        .reply-line { margin: 4px 0 12px; }
+        .detail { padding: 7px 0; border-bottom: 1px solid #e2e5ea; }
+        .detail:last-child { border-bottom: 0; }
+        .detail strong { display: inline-block; min-width: 170px; }
+        .total { margin-top: 8px; padding: 12px; background: #e0f2e9; border-radius: 8px; color: #14532d; font-weight: 700; }
+        .speaker { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .06em; }
+        form { display: flex; gap: 8px; margin-top: 20px; }
+        input[type=text] { flex: 1; min-width: 0; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; }
+        button { padding: 10px 20px; border: 0; border-radius: 8px; background: #2563eb; color: white; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h2>Inventory Agent</h2>
+
+{% for message in history %}
+    <div class="msg {{ message.role }}">
+        {% if message.role == 'agent' %}
+            <span class="speaker">Inventory assistant</span>
+            {{ message.text|format_reply }}
+        {% else %}
+            <span class="speaker">You</span>
+            {{ message.text }}
+        {% endif %}
+    </div>
+{% endfor %}
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Ask about the inventory..." autofocus>
+    <button type="submit">Send</button>
+</form>
+
+<p><a href="{% url 'reset' %}">Start over</a></p>
+
+<script>
+const chatForm = document.querySelector('form');
+chatForm.addEventListener('submit', () => {
+    const button = chatForm.querySelector('button');
+    button.disabled = true;
+    button.textContent = 'Thinking…';
+});
+</script>
+</body>
+</html>
